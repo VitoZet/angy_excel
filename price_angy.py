@@ -106,64 +106,87 @@ for nomen_poz in range(5, ws_sale.max_row + 1):
                 ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_7798_931_ch.cell(
                     row=size_in_marketing, column=ws_7798_931_ch.max_column).value
 
-#############'Болт' - 'ГОСТ 7798-70' - 'цинк' - 'кл.пр.5.8':
+                #############'Болт' - 'ГОСТ 7798-70' - 'цинк' - 'кл.пр.5.8':
     elif name_metiz == 'Болт' and gost == 'ГОСТ 7798-70' and coating == 'цинк' and cl_pro4 == 'кл.пр.5.8':
         diameter = ws_sale.cell(row=nomen_poz, column=10).value.replace('М' or '2M' or '3M', '')
         size = str(diameter) + 'х' + str(length)
         for size_in_marketing in range(7, ws_7798_931_zn.max_row):
             s_i_m = ws_7798_931_ch.cell(row=size_in_marketing, column=2).value
             if 'х' in str(length) and str(diameter) + 'х' + FullRezba(length) in GoodSizeBoltName(s_i_m):
-                ws_sale[get_column_letter(max_col + 2) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 11).value
-                ws_sale[get_column_letter(max_col + 4) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 9).value
-                ws_sale[get_column_letter(max_col + 6) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 7).value
-                ws_sale[get_column_letter(max_col + 8) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 5).value
-                ws_sale[get_column_letter(max_col + 10) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 3).value
-                ws_sale[get_column_letter(max_col + 12) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 1).value
+                ws_sale[get_column_letter(max_col + 2) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 11).value
+                ws_sale[get_column_letter(max_col + 4) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 9).value
+                ws_sale[get_column_letter(max_col + 6) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 7).value
+                ws_sale[get_column_letter(max_col + 8) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 5).value
+                ws_sale[get_column_letter(max_col + 10) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                                column=ws_7798_931_zn.max_column - 3).value
+                ws_sale[get_column_letter(max_col + 12) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                                column=ws_7798_931_zn.max_column - 1).value
             elif size in GoodSizeBoltName(s_i_m):
-                ws_sale[get_column_letter(max_col + 1) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 12).value
-                ws_sale[get_column_letter(max_col + 3) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 10).value
-                ws_sale[get_column_letter(max_col + 5) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 8).value
-                ws_sale[get_column_letter(max_col + 7) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 6).value
-                ws_sale[get_column_letter(max_col + 9) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 4).value
-                ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column - 2).value
-                ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing, column=ws_7798_931_zn.max_column).value
-                #     elif name_metiz == 'Болт' and gost == 'ГОСТ 7798-70' and coating == 'черный' and cl_pro4 == 'кл.пр.8.8':
-                #         for size_in_marketing in range(2, ws_7798_8_8.max_row):
-                #             s_i_m = ws_7798_8_8.cell(row=size_in_marketing, column=2).value
-                #             # if size in GoodSizeBoltName(s_i_m):
-                #     #             ws_sale[get_column_letter(max_col + 1) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 14).value
-                #     #             ws_sale[get_column_letter(max_col + 5) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 13).value
-                #     #             ws_sale[get_column_letter(max_col + 3) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 12).value
-                #     #             ws_sale[get_column_letter(max_col + 4) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 11).value
-                #     #             ws_sale[get_column_letter(max_col + 9) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 10).value
-                #     #             ws_sale[get_column_letter(max_col + 10) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                          column=ws_7798_8_8.max_column - 9).value
-                #     #             ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                          column=ws_7798_8_8.max_column - 8).value
-                #     # elif name_metiz == 'Болт' and gost == 'ГОСТ 7798-70' and coating == 'цинк' and cl_pro4 == 'кл.пр.8.8':
-                #     #     for size_in_marketing in range(2, ws_7798_8_8.max_row):
-                #     #         s_i_m = ws_7798_8_8.cell(row=size_in_marketing, column=2).value
-                #     #         if size in GoodSizeBoltName(s_i_m):
-                #     #             ws_sale[get_column_letter(max_col + 1) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 7).value
-                #     #             ws_sale[get_column_letter(max_col + 5) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 6).value
-                #     #             ws_sale[get_column_letter(max_col + 3) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 5).value
-                #     #             ws_sale[get_column_letter(max_col + 4) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 4).value
-                #     #             ws_sale[get_column_letter(max_col + 9) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                         column=ws_7798_8_8.max_column - 3).value
-                #     #             ws_sale[get_column_letter(max_col + 10) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                          column=ws_7798_8_8.max_column - 2).value
-                #     #             ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
-                #     #                                                                                          column=ws_7798_8_8.max_column - 1).value
-                # print(nomen_poz)
+                ws_sale[get_column_letter(max_col + 1) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 12).value
+                ws_sale[get_column_letter(max_col + 3) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 10).value
+                ws_sale[get_column_letter(max_col + 5) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 8).value
+                ws_sale[get_column_letter(max_col + 7) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 6).value
+                ws_sale[get_column_letter(max_col + 9) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                               column=ws_7798_931_zn.max_column - 4).value
+                ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                                column=ws_7798_931_zn.max_column - 2).value
+                ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_7798_931_zn.cell(row=size_in_marketing,
+                                                                                                column=ws_7798_931_zn.max_column).value
+                ############'Болт'-'ГОСТ 7798-70'-'черный'-'кл.пр.8.8':
+    elif name_metiz == 'Болт' and gost == 'ГОСТ 7798-70' and coating == 'черный' and cl_pro4 == 'кл.пр.8.8':
+        diameter = ws_sale.cell(row=nomen_poz, column=10).value.replace('М' or '2M' or '3M', '')
+        size = str(diameter) + 'х' + str(length)
+        for size_in_marketing in range(5, ws_7798_8_8.max_row):
+            s_i_m = ws_7798_8_8.cell(row=size_in_marketing, column=2).value
+            if 'х' in str(length) and str(diameter) + 'х' + FullRezba(length) in GoodSizeBoltName(
+                    s_i_m):  # полная резьба
+                ws_sale[get_column_letter(max_col + 4) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 10).value  # ДМЗ ПОЛНАЯ
+                ws_sale[get_column_letter(max_col + 10) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                             column=ws_7798_8_8.max_column - 8).value  # РМЗ ПОЛНАЯ
+            elif size in GoodSizeBoltName(s_i_m):
+                ws_sale[get_column_letter(max_col + 1) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 13).value
+                ws_sale[get_column_letter(max_col + 5) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 12).value
+                ws_sale[get_column_letter(max_col + 3) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 11).value
+                ws_sale[get_column_letter(max_col + 9) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 9).value
+                ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                             column=ws_7798_8_8.max_column - 7).value
+    ##############'Болт'--'ГОСТ 7798-70'--'цинк'--'кл.пр.8.8':
+    elif name_metiz == 'Болт' and gost == 'ГОСТ 7798-70' and coating == 'цинк' and cl_pro4 == 'кл.пр.8.8':
+        diameter = ws_sale.cell(row=nomen_poz, column=10).value.replace('М' or '2M' or '3M', '')
+        size = str(diameter) + 'х' + str(length)
+        for size_in_marketing in range(5, ws_7798_8_8.max_row):
+            s_i_m = ws_7798_8_8.cell(row=size_in_marketing, column=2).value
+            if 'х' in str(length) and str(diameter) + 'х' + FullRezba(length) in GoodSizeBoltName(
+                    s_i_m):  # полная резьба
+                ws_sale[get_column_letter(max_col + 4) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 3).value  # ДМЗ ПОЛНАЯ
+                ws_sale[get_column_letter(max_col + 10) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                             column=ws_7798_8_8.max_column - 1).value  # РМЗ ПОЛНАЯ
+            elif size in GoodSizeBoltName(s_i_m):
+                ws_sale[get_column_letter(max_col + 1) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 6).value
+                ws_sale[get_column_letter(max_col + 5) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 5).value
+                ws_sale[get_column_letter(max_col + 3) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 4).value
+                ws_sale[get_column_letter(max_col + 9) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                            column=ws_7798_8_8.max_column - 2).value
+                ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
+                                                                                             column=ws_7798_8_8.max_column).value
+    print(nomen_poz)
 wb_sale.save('PRICE_Angy.xlsx')
 toc = time()
 print(toc - tic)
