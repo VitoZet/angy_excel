@@ -16,7 +16,7 @@ def GoodSizeBoltName(bad_size_bolt_name):
         d_x_len = bad_size_bolt_name.split(sep='х')
         len_bolt = d_x_len[1].split(sep='-')
         for i in range(int(len_bolt[0]), int(len_bolt[1]) + 1):
-            f = d_x_len[0] + 'x' + str(i)
+            f = d_x_len[0] + 'х' + str(i)
             lst_good_name.append(f)
     else:
         lst_good_name.append(bad_size_bolt_name)
@@ -76,7 +76,7 @@ for nomen_poz in range(5, ws_sale.max_row + 1):
         size = str(diameter) + 'х' + str(length)
         for size_in_marketing in range(7, ws_7798_931_ch.max_row):
             s_i_m = ws_7798_931_ch.cell(row=size_in_marketing, column=2).value
-            if 'х' in str(length) and str(diameter) + 'x' + FullRezba(length) in GoodSizeBoltName(s_i_m):
+            if 'х' in str(length) and str(diameter) + 'х' + FullRezba(length) in GoodSizeBoltName(s_i_m):
                 # if str(diameter) + 'x' + FullRezba(length) in GoodSizeBoltName(s_i_m):
                 ws_sale[get_column_letter(max_col + 2) + str(nomen_poz)] = ws_7798_931_ch.cell(
                     row=size_in_marketing, column=ws_7798_931_ch.max_column - 11).value
