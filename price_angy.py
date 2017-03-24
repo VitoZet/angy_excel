@@ -4,6 +4,10 @@ from time import time
 
 tic = time()
 
+def ForListDIN_931_933_8_8(x):
+    true_name = x.split(sep='М ')
+    return true_name[1]
+
 
 def FullRezba(x):
     full_rezba = x.split(sep='х')
@@ -163,7 +167,15 @@ for nomen_poz in range(5, ws_sale.max_row + 1):
                                                                                             column=ws_7798_8_8.max_column - 9).value
                 ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
                                                                                              column=ws_7798_8_8.max_column - 7).value
-    ##############'Болт'--'ГОСТ 7798-70'--'цинк'--'кл.пр.8.8':
+        for size_in_marketing in range(4, ws_DIN__931_933_8_8.max_row):
+            s_i_m = ws_DIN__931_933_8_8.cell(row=size_in_marketing, column=2).value
+            if 'х' in str(length) and str(diameter) + 'х' + FullRezba(length) in ForListDIN_931_933_8_8(s_i_m):  # полная резьба
+                ws_sale[get_column_letter(max_col + 8) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(row=size_in_marketing,column=ws_DIN__931_933_8_8.max_column - 5).value #БЕЛЗАН (DIN 933)
+                ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(row=size_in_marketing,column=ws_DIN__931_933_8_8.max_column - 4).value #ТЕХНОТРОН DIN 931/933
+            elif size in ForListDIN_931_933_8_8(s_i_m): #обычная резьба
+                ws_sale[get_column_letter(max_col + 7) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(row=size_in_marketing,column=ws_DIN__931_933_8_8.max_column - 6).value #БЕЛЗАН (DIN 931)
+                ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(row=size_in_marketing,column=ws_DIN__931_933_8_8.max_column - 4).value #ТЕХНОТРОН DIN 931/933
+##############'Болт'--'ГОСТ 7798-70'--'цинк'--'кл.пр.8.8':
     elif name_metiz == 'Болт' and gost == 'ГОСТ 7798-70' and coating == 'цинк' and cl_pro4 == 'кл.пр.8.8':
         diameter = ws_sale.cell(row=nomen_poz, column=10).value.replace('М' or '2M' or '3M', '')
         size = str(diameter) + 'х' + str(length)
@@ -186,7 +198,24 @@ for nomen_poz in range(5, ws_sale.max_row + 1):
                                                                                             column=ws_7798_8_8.max_column - 2).value
                 ws_sale[get_column_letter(max_col + 11) + str(nomen_poz)] = ws_7798_8_8.cell(row=size_in_marketing,
                                                                                              column=ws_7798_8_8.max_column).value
+        for size_in_marketing in range(4, ws_DIN__931_933_8_8.max_row):
+            s_i_m = ws_DIN__931_933_8_8.cell(row=size_in_marketing, column=2).value
+            if 'х' in str(length) and str(diameter) + 'х' + FullRezba(length) in ForListDIN_931_933_8_8(
+                    s_i_m):  # полная резьба
+                ws_sale[get_column_letter(max_col + 8) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(
+                    row=size_in_marketing, column=ws_DIN__931_933_8_8.max_column - 1).value  # БЕЛЗАН (DIN 933)
+                ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(
+                    row=size_in_marketing, column=ws_DIN__931_933_8_8.max_column).value  # ТЕХНОТРОН DIN 931/933
+            elif size in ForListDIN_931_933_8_8(s_i_m):  # обычная резьба
+                ws_sale[get_column_letter(max_col + 7) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(
+                    row=size_in_marketing, column=ws_DIN__931_933_8_8.max_column - 2).value  # БЕЛЗАН (DIN 931)
+                ws_sale[get_column_letter(max_col + 13) + str(nomen_poz)] = ws_DIN__931_933_8_8.cell(
+                    row=size_in_marketing, column=ws_DIN__931_933_8_8.max_column).value  # ТЕХНОТРОН DIN 931/933
+    # 4 лист в БОЛТАХ дописывать в это условие
+    # ГАЙКА лист "ГОСТ_5915_DIN934_Ч" условие: кл.пр.6 - ГОСТ 5915-70
     print(nomen_poz)
 wb_sale.save('PRICE_Angy.xlsx')
+print('сохраняю...')
 toc = time()
 print(toc - tic)
+print('Готово, проверяй.')
