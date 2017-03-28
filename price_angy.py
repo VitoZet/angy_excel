@@ -267,8 +267,11 @@ for nomen_poz in range(5, ws_sale.max_row + 1):
                 ws_sale[get_column_letter(max_col + 11)+ str(nomen_poz)]=ws_GOST_5915_8.cell(row=size_in_marketing, column=ws_GOST_5915_8.max_column).value #ТЕХНОТРОН
 
     print(nomen_poz)
-wb_sale.save('PRICE_Angy.xlsx')
+toc_work = time()
+print('Время обработки '+ str(round((toc_work - tic), 2)) + ' сек')
+print('-------------')
 print('сохраняю...')
+wb_sale.save('PRICE_Angy.xlsx')
 toc = time()
-print(toc - tic)
+print('Полное время '+ str(round((toc - tic), 2)) + ' сек')
 print('Готово, проверяй.')

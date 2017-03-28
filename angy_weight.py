@@ -18,26 +18,27 @@ def SearchLastDate():
 tonnageData = {}
 for m_s in range(18, SearchLastDate()):
     for nomen_poz in range(5, ws_sale.max_row + 1):
-        # month_sale = ws_sale.cell(row=4, column=m_s).value
-        name_nomen = ws_sale.cell(row=nomen_poz, column=1).value
-        ###    gost = ws_sale.cell(row=nomen_poz, column=15).value
+        ### name_nomen = ws_sale.cell(row=nomen_poz, column=1).value
+        gost = ws_sale.cell(row=nomen_poz, column=15).value
         name_metiz = ws_sale.cell(row=nomen_poz, column=14).value
         coating = ws_sale.cell(row=nomen_poz, column=13).value
         cl_pro4 = ws_sale.cell(row=nomen_poz, column=12).value
         ###    length = ws_sale.cell(row=nomen_poz, column=11).value
         diameter = ws_sale.cell(row=nomen_poz, column=10).value  # .replace('2M' or '3M', 'М')
-        kg = ws_sale.cell(row=nomen_poz, column=6).value
+        measure_unit = ws_sale.cell(row=nomen_poz, column=6).value
         sklad = ws_sale.cell(row=nomen_poz, column=9).value
         month_sale = ws_sale.cell(row=4, column=m_s).value
         weight = ws_sale.cell(row=nomen_poz, column=m_s).value
-        if kg and name_metiz and coating and cl_pro4 and diameter and weight:
-            tonnageData.setdefault(kg, {})
-            tonnageData[kg].setdefault(name_metiz, {})
-            tonnageData[kg][name_metiz].setdefault(coating, {})
-            tonnageData[kg][name_metiz][coating].setdefault(cl_pro4, {})
-            tonnageData[kg][name_metiz][coating][cl_pro4].setdefault(diameter, {})
-            tonnageData[kg][name_metiz][coating][cl_pro4][diameter].setdefault(month_sale, {'weight': 0})
-            tonnageData[kg][name_metiz][coating][cl_pro4][diameter][month_sale]['weight'] += float(weight)
+        if measure_unit and name_metiz and coating and cl_pro4 and diameter and weight:
+            tonnageData.setdefault(sklad, {})
+            tonnageData[sklad].setdefault(measure_unit, {})
+            tonnageData[sklad][measure_unit].setdefault(name_metiz, {})
+            tonnageData[sklad][measure_unit][name_metiz].setdefault(coating, {})
+            tonnageData[sklad][measure_unit][name_metiz][coating].setdefault(cl_pro4, {})
+            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4].setdefault(gost, {})
+            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost].setdefault(diameter, {})
+            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter].setdefault(month_sale, {'weight': 0})
+            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter][month_sale]['weight'] += float(weight)
 print('словарь создал')
 toc_dic = time()
 print('Время на словарь '+ str(round((toc_dic - tic), 2)) + ' сек')
@@ -50,20 +51,28 @@ lst_coating = ['черный', 'цинк']
 all_month_sale = SearchLastDate() - 18
 
 e_cell = 1
-for nm in lst_name_metiz:
-    for co in lst_coating:
-        for kls_pro4 in sorted(tonnageData['кг'][nm][co]):
-            for diam in sorted(tonnageData['кг'][nm][co][kls_pro4]):
-                # print(nm, co, kls_pro4, diam)
-                # for m_sal in tonnageData['кг'][nm][co][kls_pro4][diam]:
-                e_cell += 1
-                ws_weight['A'+str(e_cell)] = nm
-                ws_weight['B'+str(e_cell)] = co
-                ws_weight['C'+str(e_cell)] = kls_pro4
-                ws_weight['D'+str(e_cell)] = diam
-                for m_s_s in (tonnageData['кг'][nm][co][kls_pro4][diam]):
-                    for col in range(5, all_month_sale + 5):
-                        ws_weight[get_column_letter(col)+str(e_cell)] = tonnageData['кг'][nm][co][kls_pro4][diam][m_s_s]['weight'] / 1000
+for sk in tonnageData:
+    # for m_unit in sorted(tonnageData[sk]):
+    for nm in lst_name_metiz:
+        for co in lst_coating:
+            for kls_pro4 in sorted(tonnageData[sk]['кг'][nm][co]):
+                # print(sk, nm, co, kls_pro4)
+                for gst in tonnageData[sk]['кг'][nm][co][kls_pro4]:
+                    for diam in sorted(tonnageData[sk]['кг'][nm][co][kls_pro4][gst]):
+                        # for m_sal in tonnageData[sk]['кг'][nm][co][kls_pro4][gst][diam]:
+                        # print(sk, nm, co, kls_pro4, gst, diam)
+                    # for m_sal in tonnageData['кг'][nm][co][kls_pro4][diam]:
+                        e_cell += 1
+                        ws_weight['A'+str(e_cell)] = sk
+                        # ws_weight['B'+str(e_cell)] = m_unit
+                        ws_weight['B'+str(e_cell)] = nm
+                        ws_weight['C'+str(e_cell)] = co
+                        ws_weight['D'+str(e_cell)] = kls_pro4
+                        ws_weight['E'+str(e_cell)] = gst
+                        ws_weight['F'+str(e_cell)] = diam
+                    # for m_s_s in (tonnageData['кг'][nm][co][kls_pro4][diam]):
+                    #     for col in range(5, all_month_sale + 5):
+                    #         ws_weight[get_column_letter(col)+str(e_cell)] = tonnageData['кг'][nm][co][kls_pro4][diam][m_s_s]['weight'] / 1000
 
 
 toc_work = time()

@@ -3,7 +3,7 @@ from openpyxl.styles import colors
 from openpyxl.styles import PatternFill
 from openpyxl.utils import column_index_from_string
 
-wb = openpyxl.load_workbook('АПМ БиГ Апрель 80317.xlsx')
+wb = openpyxl.load_workbook('АПМ БиГ Апрель 80317 (1).xlsx')
 ws = wb.get_active_sheet()
 head = ws['4']
 # fill_red = PatternFill(start_color='F44336', fill_type='solid')
@@ -49,7 +49,7 @@ for rows in range(5, ws.max_row):
                 ja4.fill = fill_more5
             elif 3 <= x.value / y.value < 5.5:
                 ja4 = ws[x.coordinate]
-                ja4.fill = fill_4btw5
+                ja4.fill = fill_3btw5
             # elif 2 <= x.value / y.value < 3:
             #     ja4 = ws[x.coordinate]
             #     ja4.fill = fill_red
@@ -67,5 +67,5 @@ for rows in range(5, ws.max_row):
             if x == None:
                 ja4 = [x.coordinate]
                 ja4.fill = fill_except
-
-wb.save('copy_angy_test.xlsx')
+    print(rows)
+wb.save('27-03-Py-АПМ БиГ Апрель 80317.xlsx')
