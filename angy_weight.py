@@ -1,6 +1,7 @@
 import openpyxl
 from openpyxl.utils import column_index_from_string
 from openpyxl.utils import get_column_letter
+from openpyxl.styles.fonts import Font
 from time import time
 
 tic = time()
@@ -16,7 +17,7 @@ ws_weight = wb_sale.get_sheet_by_name('Диам в тонн')
 
 def SearchLastDate():
     for ld in ws_sale['4']:
-        if ld.value == 'Итого':
+        if ld.value == 'Среднее':
             return column_index_from_string(ld.column)
 
 lst_sale = []
@@ -50,7 +51,7 @@ for m_s in range(18, SearchLastDate()):
     # print(ws_sale.cell(row=4, column=m_s).value)
 print('словарь создал')
 toc_dic = time()
-print('Время на словарь '+ str(round((toc_dic - toc_load_excel), 2)) + ' сек')
+print('Время на создание словаря '+ str(round((toc_dic - toc_load_excel), 2)) + ' сек')
 print('-------------')
 # for t in tonnageData['кг']['Болт']['черный']['кл.пр.5.8']['М10']['8.2016']:
 #     print(t)
@@ -82,14 +83,23 @@ for sk in tonnageData:
                             except:
                                 ws_weight[get_column_letter(e+7) + str(e_cell)] = None
 #Генерим шапку
+head_style = Font(b=True)
 ws_weight['A1'] = ws_sale['I4'].value
+ws_weight['A1'].font = head_style
 ws_weight['B1'] = ws_sale['N4'].value
+ws_weight['B1'].font = head_style
 ws_weight['C1'] = ws_sale['M4'].value
+ws_weight['C1'].font = head_style
 ws_weight['D1'] = ws_sale['L4'].value
+ws_weight['D1'].font = head_style
 ws_weight['E1'] = ws_sale['O4'].value
+ws_weight['E1'].font = head_style
 ws_weight['F1'] = ws_sale['J4'].value
+ws_weight['F1'].font = head_style
 for e, mm in enumerate(lst_sale):
     ws_weight[get_column_letter(e + 7) + '1'] = mm
+    ws_weight[get_column_letter(e + 7) + '1'].font = head_style
+
 
 
 toc_work = time()
