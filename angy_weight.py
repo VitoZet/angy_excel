@@ -10,20 +10,45 @@ print('Загружаю Excel')
 wb_sale = openpyxl.load_workbook('лю-АПМ БиГ Апрель 80317.xlsx')
 toc_load_excel = time()
 print('Время загрузки Excel ' + str(round((toc_load_excel - tic), 2)) + ' сек')
-print('Работаю с листом '+ str(wb_sale.sheetnames))
+print('Работаю с листом ' + str(wb_sale.sheetnames))
 ws_sale = wb_sale.get_active_sheet()
 wb_sale.create_sheet(title='Диам в тонн')
 ws_weight = wb_sale.get_sheet_by_name('Диам в тонн')
+wb_sale.create_sheet(title='ТАБЛ 1')
+ws_tabl1 = wb_sale.get_sheet_by_name('ТАБЛ 1')
+wb_sale.create_sheet(title='ТАБЛ 2')
+ws_tabl2 = wb_sale.get_sheet_by_name('ТАБЛ 2')
+
+
+def HeadWrite(lst_excel):
+    head_style = Font(b=True)
+    lst_excel['A1'] = ws_sale['I4'].value
+    lst_excel['A1'].font = head_style
+    lst_excel['B1'] = ws_sale['N4'].value
+    lst_excel['B1'].font = head_style
+    lst_excel['C1'] = ws_sale['M4'].value
+    lst_excel['C1'].font = head_style
+    lst_excel['D1'] = ws_sale['L4'].value
+    lst_excel['D1'].font = head_style
+    lst_excel['E1'] = ws_sale['O4'].value
+    lst_excel['E1'].font = head_style
+    lst_excel['F1'] = ws_sale['J4'].value
+    lst_excel['F1'].font = head_style
+    for e, mm in enumerate(lst_sale):
+        lst_excel[get_column_letter(e + 7) + '1'] = mm
+        lst_excel[get_column_letter(e + 7) + '1'].font = head_style
+
 
 def SearchLastDate():
     for ld in ws_sale['4']:
         if ld.value == 'Среднее':
             return column_index_from_string(ld.column)
 
+
 lst_sale = []
 
 tonnageData = {}
-#Сохраняем таблицу в словарь
+# Сохраняем таблицу в словарь
 for m_s in range(18, SearchLastDate()):
     lst_sale.append(ws_sale.cell(row=4, column=m_s).value)
     for nomen_poz in range(5, ws_sale.max_row + 1):
@@ -46,12 +71,14 @@ for m_s in range(18, SearchLastDate()):
             tonnageData[sklad][measure_unit][name_metiz][coating].setdefault(cl_pro4, {})
             tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4].setdefault(gost, {})
             tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost].setdefault(diameter, {})
-            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter].setdefault(month_sale, {'weight': 0})
-            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter][month_sale]['weight'] += float(weight)
-    # print(ws_sale.cell(row=4, column=m_s).value)
+            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter].setdefault(month_sale,
+                                                                                                      {'weight': 0})
+            tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter][month_sale][
+                'weight'] += float(weight)
+            # print(ws_sale.cell(row=4, column=m_s).value)
 print('словарь создал')
 toc_dic = time()
-print('Время на создание словаря '+ str(round((toc_dic - toc_load_excel), 2)) + ' сек')
+print('Время на создание словаря ' + str(round((toc_dic - toc_load_excel), 2)) + ' сек')
 print('-------------')
 # for t in tonnageData['кг']['Болт']['черный']['кл.пр.5.8']['М10']['8.2016']:
 #     print(t)
@@ -60,10 +87,14 @@ lst_name_metiz = ['Болт', 'Гайка']
 lst_coating = ['черный', 'цинк']
 all_month_sale = SearchLastDate() - 18
 
+HeadWrite(ws_weight)
+HeadWrite(ws_tabl1)
+HeadWrite(ws_tabl2)
+
 # print('9.2016 отгружено', tonnageData['SZ']['кг']['Болт']['черный']['кл.пр.5.8']['ГОСТ 7798-70']['М10']['2.2017']['weight'] / 1000)
 
 e_cell = 1
-#Заполняем таблицу данными
+# Заполняем таблицу данными
 for sk in tonnageData:
     for nm in lst_name_metiz:
         for co in lst_coating:
@@ -79,36 +110,18 @@ for sk in tonnageData:
                         ws_weight['F' + str(e_cell)] = diam
                         for e, m_s_s in enumerate(lst_sale):
                             try:
-                                ws_weight[get_column_letter(e+7)+str(e_cell)] = tonnageData[sk]['кг'][nm][co][kls_pro4][gst][diam][m_s_s]['weight'] / 1000
+                                ws_weight[get_column_letter(e + 7) + str(e_cell)] = \
+                                tonnageData[sk]['кг'][nm][co][kls_pro4][gst][diam][m_s_s]['weight'] / 1000
                             except:
-                                ws_weight[get_column_letter(e+7) + str(e_cell)] = None
-#Генерим шапку
-head_style = Font(b=True)
-ws_weight['A1'] = ws_sale['I4'].value
-ws_weight['A1'].font = head_style
-ws_weight['B1'] = ws_sale['N4'].value
-ws_weight['B1'].font = head_style
-ws_weight['C1'] = ws_sale['M4'].value
-ws_weight['C1'].font = head_style
-ws_weight['D1'] = ws_sale['L4'].value
-ws_weight['D1'].font = head_style
-ws_weight['E1'] = ws_sale['O4'].value
-ws_weight['E1'].font = head_style
-ws_weight['F1'] = ws_sale['J4'].value
-ws_weight['F1'].font = head_style
-for e, mm in enumerate(lst_sale):
-    ws_weight[get_column_letter(e + 7) + '1'] = mm
-    ws_weight[get_column_letter(e + 7) + '1'].font = head_style
-
-
+                                ws_weight[get_column_letter(e + 7) + str(e_cell)] = None
 
 toc_work = time()
-print('Время обработки '+ str(round((toc_work - tic), 2)) + ' сек')
+print('Время обработки ' + str(round((toc_work - tic), 2)) + ' сек')
 print('-------------')
 print('сохраняю...')
 wb_sale.save('WEIGHT_Angy.xlsx')
 toc_save = time()
-print('Время сохранения '+ str(round((toc_save - toc_work), 2)) + ' сек')
+print('Время сохранения ' + str(round((toc_save - toc_work), 2)) + ' сек')
 toc = time()
-print('Полное время '+ str(round((toc - tic), 2)) + ' сек')
+print('Полное время ' + str(round((toc - tic), 2)) + ' сек')
 print('Готово, проверяй.')
