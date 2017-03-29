@@ -80,9 +80,48 @@ print('словарь создал')
 toc_dic = time()
 print('Время на создание словаря ' + str(round((toc_dic - toc_load_excel), 2)) + ' сек')
 print('-------------')
-# for t in tonnageData['кг']['Болт']['черный']['кл.пр.5.8']['М10']['8.2016']:
-#     print(t)
-# print(tonnageData['кг']['Болт']['черный']['кл.пр.5.8']['М16']['9.2016']) # для тестов
+
+# Списки необходимых группировок диаметров
+lst_m16m30 = ['М16', 'М18', 'М20', 'М22', 'М24', 'М27', 'М30']
+lst_m6m16 = ['М6', 'М8', 'М10', 'М12', 'М14', 'М16']
+lst_m18m36 = ['М18', 'М20', 'М22', 'М24', 'М27', 'М30', 'М36', 'М33']
+lst_m4m16 = ['М4', 'М5', 'М6', 'М8', 'М10', 'М12', 'М14', 'М16']
+lst_m3_m42m72 = ['М3', 'М42', 'М45', 'М48', 'М52', 'М56', 'М64', 'М72']
+
+#S	Болт	черный	кл.пр.5.8	ГОСТ 7798-70	М6-М16
+# print(tonnageData['S']['кг']['Болт']['черный']['кл.пр.5.8']['ГОСТ 7798-70']['М16']['8.2016']['weight']) # для тестов
+print('начало')
+
+def SumGroupDiamMonth(groupDiam,sklad, name_metiz, coating, cl_pro4, gost, month):
+    '''Сумма веса в указанном диапозоне диаметров'''
+    summa = 0
+    for d in groupDiam:
+        summa += tonnageData[sklad]['кг'][name_metiz][coating][cl_pro4][gost][d][month]['weight'] / 1000
+    return summa
+
+# SumGroupDiamMonth(lst_m6m16, 'S','Болт','черный','кл.пр.5.8','ГОСТ 7798-70','8.2016')
+def SumGroupDiamMonthForCol(groupDiam,sklad, name_metiz, coating, cl_pro4, gost):
+    '''Сохранение в Excel по коллонкам'''
+    for e, month_col in enumerate(lst_sale):
+
+        print(e+7, round(SumGroupDiamMonth(groupDiam, sklad,name_metiz,coating,cl_pro4,gost,month_col), 2))
+        # print(e+7, SumGroupDiamMonth(lst_m6m16, 'S','Болт','черный','кл.пр.5.8','ГОСТ 7798-70',month_col))
+
+SumGroupDiamMonthForCol(lst_m6m16, 'S','Болт','черный','кл.пр.5.8','ГОСТ 7798-70')
+
+def SaveInExcel():
+    ws_tabl1['A' + '2'] = 'S'
+    ws_tabl1['B' + '2'] = 'Болт'
+    ws_tabl1['C' + '2'] = 'черный'
+    ws_tabl1['D' + '2'] = 'кл.пр.5.8'
+    ws_tabl1['E' + '2'] = 'ГОСТ 7798-70'
+
+
+
+# print('33338.524000000005')
+# print(tonnageData['S']['кг']['Болт']['черный']['кл.пр.5.8']['ГОСТ 7798-70'][d]['8.2016']['weight'])  # для тестов
+
+print('конец')
 lst_name_metiz = ['Болт', 'Гайка']
 lst_coating = ['черный', 'цинк']
 all_month_sale = SearchLastDate() - 18
@@ -110,16 +149,20 @@ for sk in tonnageData:
                         ws_weight['F' + str(e_cell)] = diam
                         for e, m_s_s in enumerate(lst_sale):
                             try:
-                                ws_weight[get_column_letter(e + 7) + str(e_cell)] = \
-                                tonnageData[sk]['кг'][nm][co][kls_pro4][gst][diam][m_s_s]['weight'] / 1000
+                                ws_weight[get_column_letter(e + 7) + str(e_cell)] = tonnageData[sk]['кг'][nm][co][kls_pro4][gst][diam][m_s_s]['weight'] / 1000
                             except:
                                 ws_weight[get_column_letter(e + 7) + str(e_cell)] = None
+
+
+
+
+
 
 toc_work = time()
 print('Время обработки ' + str(round((toc_work - tic), 2)) + ' сек')
 print('-------------')
 print('сохраняю...')
-wb_sale.save('WEIGHT_Angy.xlsx')
+# wb_sale.save('WEIGHT_Angy.xlsx')
 toc_save = time()
 print('Время сохранения ' + str(round((toc_save - toc_work), 2)) + ' сек')
 toc = time()
