@@ -2,6 +2,7 @@ import openpyxl
 from openpyxl.utils import column_index_from_string
 from openpyxl.utils import get_column_letter
 from openpyxl.styles.fonts import Font
+from openpyxl.styles import PatternFill
 from time import time
 
 tic = time()
@@ -18,6 +19,8 @@ wb_sale.create_sheet(title='ТАБЛ 1')
 ws_tabl1 = wb_sale.get_sheet_by_name('ТАБЛ 1')
 wb_sale.create_sheet(title='ТАБЛ 2')
 ws_tabl2 = wb_sale.get_sheet_by_name('ТАБЛ 2')
+
+fill_ALL = PatternFill(start_color='DDDDDD', fill_type='solid')
 
 
 def HeadWrite(lst_excel):
@@ -75,7 +78,7 @@ for m_s in range(18, SearchLastDate()):
                                                                                                       {'weight': 0})
             tonnageData[sklad][measure_unit][name_metiz][coating][cl_pro4][gost][diameter][month_sale][
                 'weight'] += float(weight)
-            # print(ws_sale.cell(row=4, column=m_s).value)
+
 print('словарь создал')
 toc_dic = time()
 print('Время на создание словаря ' + str(round((toc_dic - toc_load_excel), 2)) + ' сек')
@@ -83,59 +86,103 @@ print('-------------')
 
 # Словарь с списками необходимых группировок диаметров
 DictGroupDiam = {'М16-М30': ('М16', 'М18', 'М20', 'М22', 'М24', 'М27', 'М30'),
-                 'М6-М16': ['М6', 'М8', 'М10', 'М12', 'М14', 'М16'],
-                 'М18-М36': ['М18', 'М20', 'М22', 'М24', 'М27', 'М30', 'М36', 'М33'],
-                 'М4-М16': ['М4', 'М5', 'М6', 'М8', 'М10', 'М12', 'М14', 'М16'],
-                 'М3, М42-М72': ['М3', 'М42', 'М45', 'М48', 'М52', 'М56', 'М64', 'М72']}
-print(DictGroupDiam['М16-М30'])
-m6_m16= ['М6', 'М8', 'М10', 'М12', 'М14', 'М16']
-# S	Болт	черный	кл.пр.5.8	ГОСТ 7798-70	М6-М16
-# print(tonnageData['S']['кг']['Болт']['черный']['кл.пр.5.8']['ГОСТ 7798-70']['М16']['8.2016']['weight']) # для тестов
-print('начало')
-
+                 'М6-М16': ('М6', 'М8', 'М10', 'М12', 'М14', 'М16'),
+                 'М18-М36': ('М18', 'М20', 'М22', 'М24', 'М27', 'М30', 'М36', 'М33'),
+                 'М4-М16': ('М4', 'М5', 'М6', 'М8', 'М10', 'М12', 'М14', 'М16'),
+                 'М3, М42-М72': ('М3', 'М42', 'М45', 'М48', 'М52', 'М56', 'М64', 'М72')}
 
 def SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month):
     '''Сумма веса в указанном диапозоне диаметров'''
     summa = 0
     for d in groupDiam:
-        summa += tonnageData[sklad]['кг'][name_metiz][coating][cl_pro4][gost][d][month]['weight'] / 1000
+        try:
+            summa += tonnageData[sklad]['кг'][name_metiz][coating][cl_pro4][gost][d][month]['weight'] / 1000
+        except: summa += 0
     return summa
 
-
-# SumGroupDiamMonth(lst_m6m16, 'S','Болт','черный','кл.пр.5.8','ГОСТ 7798-70','8.2016')
 def SumGroupDiamMonthForCol(groupDiam, sklad, name_metiz, coating, cl_pro4, gost):
     '''Сохранение в Excel по коллонкам'''
     for e, month_col in enumerate(lst_sale):
-        ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row)] = round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month_col), 2)
-        # print(e + 7, round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month_col), 2))
-        # print(e+7, SumGroupDiamMonth(lst_m6m16, 'S','Болт','черный','кл.пр.5.8','ГОСТ 7798-70',month_col))
+        if coating == 'ч + ц':
+            ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, 'черный', cl_pro4, gost, month_col), 5) + round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, 'цинк', cl_pro4, gost, month_col), 5)
+        else:
+            ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row)] = round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month_col), 5)
 
-
-# SumGroupDiamMonthForCol(DictGroupDiam['М6-М16'], 'S', 'Болт', 'черный', 'кл.пр.5.8', 'ГОСТ 7798-70')
-
+def AllSumGroupDiamMonthForCol():
+    '''Считаем сумму по всем скалдам и записываем по всем столбцам'''
+    for e, month_col in enumerate(lst_sale):
+        ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row - 1)].value + ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row - 2)].value + ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row - 3)].value
+        ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)].fill = fill_ALL
 
 def SaveInExcel(name_metiz, coating, cl_pro4, gost, groupDiam):
     lst_sklad = ['S', 'Z', 'SZ', 'ALL']
     for sk in lst_sklad:
-        ws_tabl1['A' + str(ws_tabl1.max_row+1)] = sk
+        ws_tabl1['A' + str(ws_tabl1.max_row + 1)] = sk
         ws_tabl1['B' + str(ws_tabl1.max_row)] = name_metiz
         ws_tabl1['C' + str(ws_tabl1.max_row)] = coating
         ws_tabl1['D' + str(ws_tabl1.max_row)] = cl_pro4
         ws_tabl1['E' + str(ws_tabl1.max_row)] = gost
-        # ws_tabl1['F' + str(ws_tabl1.max_row)] = groupDiam
+        ws_tabl1['F' + str(ws_tabl1.max_row)] = groupDiam
         if not sk == 'ALL':
-            SumGroupDiamMonthForCol(groupDiam,sk,name_metiz,coating,cl_pro4,gost)
+            SumGroupDiamMonthForCol(DictGroupDiam[groupDiam],sk,name_metiz,coating,cl_pro4,gost)
         else:
-            pass
+            AllSumGroupDiamMonthForCol()
+            ws_tabl1['A' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['B' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['C' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['D' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['E' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['F' + str(ws_tabl1.max_row)].fill = fill_ALL
 
-SaveInExcel('Болт', 'черный', 'кл.пр.5.8', 'ГОСТ 7798-70', m6_m16)
 
+def SaveInExcelSummCoating(name_metiz, coating, cl_pro4, gost, groupDiam):
+    lst_sklad = ['S', 'Z', 'SZ', 'ALL']
+    for sk in lst_sklad:
+        ws_tabl1['A' + str(ws_tabl1.max_row + 1)] = sk
+        ws_tabl1['B' + str(ws_tabl1.max_row)] = name_metiz
+        ws_tabl1['C' + str(ws_tabl1.max_row)] = 'ч + ц'
+        ws_tabl1['D' + str(ws_tabl1.max_row)] = cl_pro4
+        ws_tabl1['E' + str(ws_tabl1.max_row)] = gost
+        ws_tabl1['F' + str(ws_tabl1.max_row)] = groupDiam
+        if not sk == 'ALL':
+            SumGroupDiamMonthForCol(DictGroupDiam[groupDiam], sk, name_metiz, coating, cl_pro4, gost)
+        else:
+            AllSumGroupDiamMonthForCol()
+            ws_tabl1['A' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['B' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['C' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['D' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['E' + str(ws_tabl1.max_row)].fill = fill_ALL
+            ws_tabl1['F' + str(ws_tabl1.max_row)].fill = fill_ALL
 
+# '''Пишем Болты в лист2'''
+SaveInExcelSummCoating('Болт', 'ч + ц', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
+SaveInExcel('Болт', 'черный', 'кл.пр.5.8', 'ГОСТ 7798-70', 'М6-М16')
+SaveInExcel('Болт', 'черный', 'кл.пр.8.8', 'ГОСТ 7798-70', 'М6-М16')
+SaveInExcel('Болт', 'цинк', 'кл.пр.5.8', 'ГОСТ 7798-70', 'М6-М16')
+SaveInExcel('Болт', 'цинк', 'кл.пр.8.8', 'ГОСТ 7798-70', 'М6-М16')
+SaveInExcel('Болт', 'черный', 'кл.пр.5.8', 'ГОСТ 7798-70', 'М18-М36')
+SaveInExcel('Болт', 'черный', 'кл.пр.8.8', 'ГОСТ 7798-70', 'М18-М36')
+SaveInExcel('Болт', 'цинк', 'кл.пр.5.8', 'ГОСТ 7798-70', 'М18-М36')
+SaveInExcel('Болт', 'цинк', 'кл.пр.8.8', 'ГОСТ 7798-70', 'М18-М36')
+#Пишем Гайки в лист2
+SaveInExcelSummCoating('Гайка', 'ч + ц', 'кл.пр.10', 'ГОСТ Р 52645-2006', 'М16-М30')
+SaveInExcel('Гайка', 'черный', 'кл.пр.6', 'ГОСТ 5915-70', 'М4-М16')
+SaveInExcel('Гайка', 'черный', 'кл.пр.6', 'ГОСТ 5915-70', 'М18-М36')
+SaveInExcel('Гайка', 'черный', 'кл.пр.6', 'ГОСТ 5915-70', 'М3, М42-М72')
 
-# print('33338.524000000005')
-# print(tonnageData['S']['кг']['Болт']['черный']['кл.пр.5.8']['ГОСТ 7798-70'][d]['8.2016']['weight'])  # для тестов
+SaveInExcel('Гайка', 'черный', 'кл.пр.8', 'ГОСТ 5915-70', 'М4-М16')
+SaveInExcel('Гайка', 'черный', 'кл.пр.8', 'ГОСТ 5915-70', 'М18-М36')
+SaveInExcel('Гайка', 'черный', 'кл.пр.8', 'ГОСТ 5915-70', 'М3, М42-М72')
 
-print('конец')
+SaveInExcel('Гайка', 'цинк', 'кл.пр.6', 'ГОСТ 5915-70', 'М4-М16')
+SaveInExcel('Гайка', 'цинк', 'кл.пр.6', 'ГОСТ 5915-70', 'М18-М36')
+SaveInExcel('Гайка', 'цинк', 'кл.пр.6', 'ГОСТ 5915-70', 'М3, М42-М72')
+
+SaveInExcel('Гайка', 'цинк', 'кл.пр.8', 'ГОСТ 5915-70', 'М4-М16')
+SaveInExcel('Гайка', 'цинк', 'кл.пр.8', 'ГОСТ 5915-70', 'М18-М36')
+SaveInExcel('Гайка', 'цинк', 'кл.пр.8', 'ГОСТ 5915-70', 'М3, М42-М72')
+
 lst_name_metiz = ['Болт', 'Гайка']
 lst_coating = ['черный', 'цинк']
 all_month_sale = SearchLastDate() - 18
@@ -144,7 +191,6 @@ HeadWrite(ws_weight)
 HeadWrite(ws_tabl1)
 HeadWrite(ws_tabl2)
 
-# print('9.2016 отгружено', tonnageData['SZ']['кг']['Болт']['черный']['кл.пр.5.8']['ГОСТ 7798-70']['М10']['2.2017']['weight'] / 1000)
 
 e_cell = 1
 # Заполняем таблицу данными
@@ -166,10 +212,10 @@ for sk in tonnageData:
                                 ws_weight[get_column_letter(e + 7) + str(e_cell)] = \
                                 tonnageData[sk]['кг'][nm][co][kls_pro4][gst][diam][m_s_s]['weight'] / 1000
                             except:
-                                ws_weight[get_column_letter(e + 7) + str(e_cell)] = None
+                                ws_weight[get_column_letter(e + 7) + str(e_cell)] = 0
 
 toc_work = time()
-print('Время обработки ' + str(round((toc_work - tic), 2)) + ' сек')
+print('Время обработки ' + str(round((toc_work - toc_load_excel), 2)) + ' сек')
 print('-------------')
 print('сохраняю...')
 wb_sale.save('WEIGHT_Angy.xlsx')
