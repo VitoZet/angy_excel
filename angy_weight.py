@@ -24,6 +24,7 @@ fill_ALL = PatternFill(start_color='DDDDDD', fill_type='solid')
 fill_ALL_Bolt = PatternFill(start_color='8FBC8F', fill_type='solid')
 fill_ALL_Gaika = PatternFill(start_color='66CDAA', fill_type='solid')
 fill_ITOGO = PatternFill(start_color='DDA0DD', fill_type='solid')
+fill_MOST = PatternFill(start_color='FFA500', fill_type='solid')
 head_style = Font(b=True)
 
 def HeadWrite(lst_excel):
@@ -263,15 +264,28 @@ def ItogoGaika():
     for i in range(1,ws_tabl2.max_column+1):
         ws_tabl2[get_column_letter(i) + str(ws_tabl2.max_row)].fill = fill_ITOGO
 
-# def TAB2Gost52644_52645(name_metiz, cl_pro4, gost, groupDiam):
-#     sklad = ('S', 'SZ', 'Z')
-#     coating = ('черный', 'цинк')
-#     for e, month_col in enumerate(lst_sale):
-#         for sk in sklad:
-#             for co in coating:
-#                 summ = 0
-#                 summ += SumGroupDiamMonth(groupDiam, sk, name_metiz, co, cl_pro4, gost, month_col)
-#                 ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row+1)] = summ
+def TAB2MostKrep(name_metiz, cl_pro4, gost, groupDiam):
+    ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'S+SZ+Z'
+    ws_tabl2['B' + str(ws_tabl2.max_row)] = name_metiz
+    ws_tabl2['C' + str(ws_tabl2.max_row)] = 'ч + ц'
+    ws_tabl2['D' + str(ws_tabl2.max_row)] = cl_pro4
+    ws_tabl2['E' + str(ws_tabl2.max_row)] = gost
+    ws_tabl2['F' + str(ws_tabl2.max_row)] = groupDiam
+    sklad = ('S', 'SZ', 'Z')
+    coating = ('черный', 'цинк')
+    for e, month_col in enumerate(lst_sale):
+        for sk in sklad:
+            for co in coating:
+                summ = 0
+                summ += SumGroupDiamMonth(DictGroupDiam[groupDiam], sk, name_metiz, co, cl_pro4, gost, month_col)
+                ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = summ
+    for i in range(1, ws_tabl2.max_column+1):
+        ws_tabl2[get_column_letter(i) + str(ws_tabl2.max_row)].fill = fill_MOST
+
+# TAB2Gost52644_52645('Болт', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
+# SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month)
+# print(SumGroupDiamMonth(DictGroupDiam['М16-М30'], 'Z', 'Болт', 'черный', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', '9.2016'))
+# print(tonnageData['Z']['кг']['Болт']['черный']['кл.пр.10.9']['ГОСТ Р 52644-2006']['М16']['9.2016']['weight'] / 1000)
 
 # '''Пишем Болты в ТАБ1'''
 TAB1SaveInExcelSummCoating('Болт', 'ч + ц', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
@@ -318,7 +332,10 @@ TAB2SumGroupDiamMonthForCol('М18-М36', 'Гайка', 'кл.пр.8', 'ГОСТ 
 TAB2SumGroupDiamMonthForCol('М3, М42-М72', 'Гайка', 'кл.пр.8', 'ГОСТ 5915-70')
 TAB2SumGaika('кл.пр.8', 'ГОСТ 5915-70')
 ItogoGaika()
-# TAB2Gost52644_52645('Болт', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
+#Мостовой Крепеж
+TAB2MostKrep('Болт', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
+TAB2MostKrep('Гайка', 'кл.пр.10', 'ГОСТ Р 52645-2006', 'М16-М30')
+
 
 
 lst_name_metiz = ['Болт', 'Гайка']
