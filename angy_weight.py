@@ -282,11 +282,6 @@ def TAB2MostKrep(name_metiz, cl_pro4, gost, groupDiam):
     for i in range(1, ws_tabl2.max_column+1):
         ws_tabl2[get_column_letter(i) + str(ws_tabl2.max_row)].fill = fill_MOST
 
-# TAB2Gost52644_52645('Болт', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
-# SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month)
-# print(SumGroupDiamMonth(DictGroupDiam['М16-М30'], 'Z', 'Болт', 'черный', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', '9.2016'))
-# print(tonnageData['Z']['кг']['Болт']['черный']['кл.пр.10.9']['ГОСТ Р 52644-2006']['М16']['9.2016']['weight'] / 1000)
-
 # '''Пишем Болты в ТАБ1'''
 TAB1SaveInExcelSummCoating('Болт', 'ч + ц', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
 TAB1SaveInExcel('Болт', 'черный', 'кл.пр.5.8', 'ГОСТ 7798-70', 'М6-М16')
