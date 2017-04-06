@@ -3,7 +3,7 @@ from openpyxl.styles import colors
 from openpyxl.styles import PatternFill
 from openpyxl.utils import column_index_from_string
 
-wb = openpyxl.load_workbook('АПМ БиГ Апрель 80317 (1).xlsx')
+wb = openpyxl.load_workbook('price-апм МОСТОВОЙ без  РК 060417.xlsx')
 ws = wb.get_active_sheet()
 head = ws['4']
 # fill_red = PatternFill(start_color='F44336', fill_type='solid')
@@ -68,4 +68,4 @@ for rows in range(5, ws.max_row):
                 ja4 = [x.coordinate]
                 ja4.fill = fill_except
     print(rows)
-wb.save('27-03-Py-АПМ БиГ Апрель 80317.xlsx')
+wb.save('color-price-апм МОСТОВОЙ без  РК 060417.xlsx')

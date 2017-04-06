@@ -27,7 +27,7 @@ def GoodSizeBoltName(bad_size_bolt_name):
     return lst_good_name
 
 
-wb_sale = openpyxl.load_workbook('лю-АПМ БиГ Апрель 80317.xlsx')
+wb_sale = openpyxl.load_workbook('апм МОСТОВОЙ без  РК 060417.xlsx')
 ws_sale = wb_sale.get_active_sheet()
 ########################### БОЛТЫ
 wb_bolt = openpyxl.load_workbook('БОЛТ_2017.xlsx')
@@ -271,7 +271,7 @@ toc_work = time()
 print('Время обработки '+ str(round((toc_work - tic), 2)) + ' сек')
 print('-------------')
 print('сохраняю...')
-wb_sale.save('PRICE_Angy.xlsx')
+wb_sale.save('price-апм МОСТОВОЙ без  РК 060417.xlsx')
 toc = time()
 print('Полное время '+ str(round((toc - tic), 2)) + ' сек')
 print('Готово, проверяй.')
