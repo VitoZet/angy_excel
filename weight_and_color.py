@@ -5,7 +5,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles.fonts import Font
 from openpyxl.styles import PatternFill
 
-wb_sale = openpyxl.load_workbook('АПМ Май 2017 от 070417 (1).xlsx')
+wb_sale = openpyxl.load_workbook('АПМ-o1.xlsx')
 ws_sale = wb_sale.get_active_sheet()
 wb_sale.create_sheet(title='Диам в тонн')
 ws_weight = wb_sale.get_sheet_by_name('Диам в тонн')
@@ -20,6 +20,7 @@ fill_ALL_Gaika = PatternFill(start_color='66CDAA', fill_type='solid')
 fill_ITOGO = PatternFill(start_color='DDA0DD', fill_type='solid')
 fill_MOST = PatternFill(start_color='FFA500', fill_type='solid')
 head_style = Font(b=True)
+
 
 def HeadWrite(lst_excel):
     lst_excel['A1'] = ws_sale['I4'].value
@@ -83,26 +84,33 @@ DictGroupDiam = {'М16-М30': ('М16', 'М18', 'М20', 'М22', 'М24', 'М27', '
                  'М4-М16': ('М4', 'М5', 'М6', 'М8', 'М10', 'М12', 'М14', 'М16'),
                  'М3, М42-М72': ('М3', 'М42', 'М45', 'М48', 'М52', 'М56', 'М64', 'М72')}
 
+
 def SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month):
     '''Сумма веса в указанном диапозоне диаметров по указанному месяцу(месяц дает другая функция)'''
     summa = 0
     for d in groupDiam:
         try:
             summa += tonnageData[sklad]['кг'][name_metiz][coating][cl_pro4][gost][d][month]['weight'] / 1000
-        except: summa += 0
+        except:
+            summa += 0
     return summa
+
 
 def TAB1SumGroupDiamMonthForCol(groupDiam, sklad, name_metiz, coating, cl_pro4, gost):
     '''Сохранение в Excel по коллонкам суммы весов по месяцам'''
     for e, month_col in enumerate(lst_sale):
         if coating == 'ч + ц':
-            ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, 'черный', cl_pro4, gost, month_col), 5) + round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, 'цинк', cl_pro4, gost, month_col), 5)
+            ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = round(
+                SumGroupDiamMonth(groupDiam, sklad, name_metiz, 'черный', cl_pro4, gost, month_col), 5) + round(
+                SumGroupDiamMonth(groupDiam, sklad, name_metiz, 'цинк', cl_pro4, gost, month_col), 5)
         else:
-            ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row)] = round(SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month_col), 5)
+            ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = round(
+                SumGroupDiamMonth(groupDiam, sklad, name_metiz, coating, cl_pro4, gost, month_col), 5)
+
 
 def TAB2SumGroupDiamMonthForCol(groupDiam, name_metiz, cl_pro4, gost):
     '''Сохранение в Excel по коллонкам в ТАБ2'''
-    coating =('черный','цинк','ч+ц')
+    coating = ('черный', 'цинк', 'ч+ц')
     for co in coating:
         if co != 'ч+ц':
             ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'S+SZ+Z'
@@ -112,7 +120,12 @@ def TAB2SumGroupDiamMonthForCol(groupDiam, name_metiz, cl_pro4, gost):
             ws_tabl2['E' + str(ws_tabl2.max_row)] = gost
             ws_tabl2['F' + str(ws_tabl2.max_row)] = groupDiam
             for e, month_col in enumerate(lst_sale):
-                ws_tabl2[get_column_letter(e + 7)+str(ws_tabl2.max_row)] = round(SumGroupDiamMonth(DictGroupDiam[groupDiam], 'S', name_metiz, co, cl_pro4, gost, month_col), 5) + round(SumGroupDiamMonth(DictGroupDiam[groupDiam], 'SZ', name_metiz, co, cl_pro4, gost, month_col), 5) + round(SumGroupDiamMonth(DictGroupDiam[groupDiam], 'Z', name_metiz, co, cl_pro4, gost, month_col), 5)
+                ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = round(
+                    SumGroupDiamMonth(DictGroupDiam[groupDiam], 'S', name_metiz, co, cl_pro4, gost, month_col),
+                    5) + round(
+                    SumGroupDiamMonth(DictGroupDiam[groupDiam], 'SZ', name_metiz, co, cl_pro4, gost, month_col),
+                    5) + round(
+                    SumGroupDiamMonth(DictGroupDiam[groupDiam], 'Z', name_metiz, co, cl_pro4, gost, month_col), 5)
         else:
             ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'ALL'
             ws_tabl2['A' + str(ws_tabl2.max_row)].fill = fill_ALL
@@ -128,15 +141,17 @@ def TAB2SumGroupDiamMonthForCol(groupDiam, name_metiz, cl_pro4, gost):
             ws_tabl2['F' + str(ws_tabl2.max_row)] = groupDiam
             ws_tabl2['F' + str(ws_tabl2.max_row)].fill = fill_ALL
             for e, month_col in enumerate(lst_sale):
-                ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-1)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-2)].value
+                ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(
+                    ws_tabl2.max_row - 1)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 2)].value
                 ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)].fill = fill_ALL
+
 
 def TAB2SumBolT(cl_pro4, gost):
     '''Сохранение в Excel cумму общих болтов по коллонкам в ТАБ2'''
     coating = ('черный', 'цинк', 'ч+ц')
     for co in coating:
         ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'All Diam'
-        ws_tabl2['A' + str(ws_tabl2.max_row )].fill = fill_ALL_Bolt
+        ws_tabl2['A' + str(ws_tabl2.max_row)].fill = fill_ALL_Bolt
         ws_tabl2['B' + str(ws_tabl2.max_row)] = 'Болт'
         ws_tabl2['B' + str(ws_tabl2.max_row)].fill = fill_ALL_Bolt
         ws_tabl2['C' + str(ws_tabl2.max_row)] = co
@@ -149,17 +164,19 @@ def TAB2SumBolT(cl_pro4, gost):
         ws_tabl2['F' + str(ws_tabl2.max_row)].fill = fill_ALL_Bolt
         ws_tabl2['F' + str(ws_tabl2.max_row)].font = head_style
         for e, month_col in enumerate(lst_sale):
-            ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-3)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-6)].value
+            ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(
+                ws_tabl2.max_row - 3)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 6)].value
             ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)].fill = fill_ALL_Bolt
         if co == 'ч+ц':
             ws_tabl2['C' + str(ws_tabl2.max_row)].font = head_style
+
 
 def TAB2SumGaika(cl_pro4, gost):
     '''Сохранение в Excel cумму общих гаек по коллонкам в ТАБ2'''
     coating = ('черный', 'цинк', 'ч+ц')
     for co in coating:
         ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'All Diam'
-        ws_tabl2['A' + str(ws_tabl2.max_row )].fill = fill_ALL_Gaika
+        ws_tabl2['A' + str(ws_tabl2.max_row)].fill = fill_ALL_Gaika
         ws_tabl2['B' + str(ws_tabl2.max_row)] = 'Гайка'
         ws_tabl2['B' + str(ws_tabl2.max_row)].fill = fill_ALL_Gaika
         ws_tabl2['C' + str(ws_tabl2.max_row)] = co
@@ -172,19 +189,24 @@ def TAB2SumGaika(cl_pro4, gost):
         ws_tabl2['F' + str(ws_tabl2.max_row)].fill = fill_ALL_Gaika
         ws_tabl2['F' + str(ws_tabl2.max_row)].font = head_style
         for e, month_col in enumerate(lst_sale):
-            ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-3)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-6)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row-9)].value
+            ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(
+                ws_tabl2.max_row - 3)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 6)].value + \
+                                                                         ws_tabl2[get_column_letter(e + 7) + str(
+                                                                             ws_tabl2.max_row - 9)].value
             ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)].fill = fill_ALL_Gaika
         if co == 'ч+ц':
             ws_tabl2['C' + str(ws_tabl2.max_row)].font = head_style
 
 
-
-
 def TAB1AllSumGroupDiamMonthForCol():
     '''Считаем сумму по всем скалдам и записываем по всем столбцам'''
     for e, month_col in enumerate(lst_sale):
-        ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row - 1)].value + ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row - 2)].value + ws_tabl1[get_column_letter(e + 7)+str(ws_tabl1.max_row - 3)].value
+        ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)] = ws_tabl1[get_column_letter(e + 7) + str(
+            ws_tabl1.max_row - 1)].value + ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row - 2)].value + \
+                                                                     ws_tabl1[get_column_letter(e + 7) + str(
+                                                                         ws_tabl1.max_row - 3)].value
         ws_tabl1[get_column_letter(e + 7) + str(ws_tabl1.max_row)].fill = fill_ALL
+
 
 def TAB1SaveInExcel(name_metiz, coating, cl_pro4, gost, groupDiam):
     lst_sklad = ['S', 'Z', 'SZ', 'ALL']
@@ -196,7 +218,7 @@ def TAB1SaveInExcel(name_metiz, coating, cl_pro4, gost, groupDiam):
         ws_tabl1['E' + str(ws_tabl1.max_row)] = gost
         ws_tabl1['F' + str(ws_tabl1.max_row)] = groupDiam
         if not sk == 'ALL':
-            TAB1SumGroupDiamMonthForCol(DictGroupDiam[groupDiam],sk,name_metiz,coating,cl_pro4,gost)
+            TAB1SumGroupDiamMonthForCol(DictGroupDiam[groupDiam], sk, name_metiz, coating, cl_pro4, gost)
         else:
             TAB1AllSumGroupDiamMonthForCol()
             ws_tabl1['A' + str(ws_tabl1.max_row)].fill = fill_ALL
@@ -228,6 +250,7 @@ def TAB1SaveInExcelSummCoating(name_metiz, coating, cl_pro4, gost, groupDiam):
             ws_tabl1['E' + str(ws_tabl1.max_row)].fill = fill_ALL
             ws_tabl1['F' + str(ws_tabl1.max_row)].fill = fill_ALL
 
+
 def ItogoBolt():
     ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'ИТОГО'
     ws_tabl2['A' + str(ws_tabl2.max_row)].font = head_style
@@ -236,8 +259,9 @@ def ItogoBolt():
     ws_tabl2['E' + str(ws_tabl2.max_row)] = 'ГОСТ 7798-70'
     ws_tabl2['E' + str(ws_tabl2.max_row)].font = head_style
     for e, month_col in enumerate(lst_sale):
-        ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7)+str(ws_tabl2.max_row - 1)].value + ws_tabl2[get_column_letter(e + 7)+str(ws_tabl2.max_row - 10)].value
-    for i in range(1,ws_tabl2.max_column+1):
+        ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(
+            ws_tabl2.max_row - 1)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 10)].value
+    for i in range(1, ws_tabl2.max_column + 1):
         ws_tabl2[get_column_letter(i) + str(ws_tabl2.max_row)].fill = fill_ITOGO
 
 
@@ -249,9 +273,11 @@ def ItogoGaika():
     ws_tabl2['E' + str(ws_tabl2.max_row)] = 'ГОСТ 5915-70'
     ws_tabl2['E' + str(ws_tabl2.max_row)].font = head_style
     for e, month_col in enumerate(lst_sale):
-        ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 1)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 13)].value
-    for i in range(1,ws_tabl2.max_column+1):
+        ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = ws_tabl2[get_column_letter(e + 7) + str(
+            ws_tabl2.max_row - 1)].value + ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row - 13)].value
+    for i in range(1, ws_tabl2.max_column + 1):
         ws_tabl2[get_column_letter(i) + str(ws_tabl2.max_row)].fill = fill_ITOGO
+
 
 def TAB2MostKrep(name_metiz, cl_pro4, gost, groupDiam):
     ws_tabl2['A' + str(ws_tabl2.max_row + 1)] = 'S+SZ+Z'
@@ -268,8 +294,9 @@ def TAB2MostKrep(name_metiz, cl_pro4, gost, groupDiam):
                 summ = 0
                 summ += SumGroupDiamMonth(DictGroupDiam[groupDiam], sk, name_metiz, co, cl_pro4, gost, month_col)
                 ws_tabl2[get_column_letter(e + 7) + str(ws_tabl2.max_row)] = summ
-    for i in range(1, ws_tabl2.max_column+1):
+    for i in range(1, ws_tabl2.max_column + 1):
         ws_tabl2[get_column_letter(i) + str(ws_tabl2.max_row)].fill = fill_MOST
+
 
 # '''Пишем Болты в ТАБ1'''
 TAB1SaveInExcelSummCoating('Болт', 'ч + ц', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
@@ -281,7 +308,7 @@ TAB1SaveInExcel('Болт', 'черный', 'кл.пр.5.8', 'ГОСТ 7798-70',
 TAB1SaveInExcel('Болт', 'черный', 'кл.пр.8.8', 'ГОСТ 7798-70', 'М18-М36')
 TAB1SaveInExcel('Болт', 'цинк', 'кл.пр.5.8', 'ГОСТ 7798-70', 'М18-М36')
 TAB1SaveInExcel('Болт', 'цинк', 'кл.пр.8.8', 'ГОСТ 7798-70', 'М18-М36')
-#Пишем Гайки в ТАБ1
+# Пишем Гайки в ТАБ1
 TAB1SaveInExcelSummCoating('Гайка', 'ч + ц', 'кл.пр.10', 'ГОСТ Р 52645-2006', 'М16-М30')
 TAB1SaveInExcel('Гайка', 'черный', 'кл.пр.6', 'ГОСТ 5915-70', 'М4-М16')
 TAB1SaveInExcel('Гайка', 'черный', 'кл.пр.6', 'ГОСТ 5915-70', 'М18-М36')
@@ -298,7 +325,7 @@ TAB1SaveInExcel('Гайка', 'цинк', 'кл.пр.6', 'ГОСТ 5915-70', 'М
 TAB1SaveInExcel('Гайка', 'цинк', 'кл.пр.8', 'ГОСТ 5915-70', 'М4-М16')
 TAB1SaveInExcel('Гайка', 'цинк', 'кл.пр.8', 'ГОСТ 5915-70', 'М18-М36')
 TAB1SaveInExcel('Гайка', 'цинк', 'кл.пр.8', 'ГОСТ 5915-70', 'М3, М42-М72')
-#Пишем данные в ТАБ2 балты
+# Пишем данные в ТАБ2 балты
 TAB2SumGroupDiamMonthForCol('М6-М16', 'Болт', 'кл.пр.5.8', 'ГОСТ 7798-70')
 TAB2SumGroupDiamMonthForCol('М18-М36', 'Болт', 'кл.пр.5.8', 'ГОСТ 7798-70')
 TAB2SumBolT('кл.пр.5.8', 'ГОСТ 7798-70')
@@ -306,7 +333,7 @@ TAB2SumGroupDiamMonthForCol('М6-М16', 'Болт', 'кл.пр.8.8', 'ГОСТ 7
 TAB2SumGroupDiamMonthForCol('М18-М36', 'Болт', 'кл.пр.8.8', 'ГОСТ 7798-70')
 TAB2SumBolT('кл.пр.8.8', 'ГОСТ 7798-70')
 ItogoBolt()
-#Пишем данные в ТАБ2 гайки
+# Пишем данные в ТАБ2 гайки
 TAB2SumGroupDiamMonthForCol('М6-М16', 'Гайка', 'кл.пр.6', 'ГОСТ 5915-70')
 TAB2SumGroupDiamMonthForCol('М18-М36', 'Гайка', 'кл.пр.6', 'ГОСТ 5915-70')
 TAB2SumGroupDiamMonthForCol('М3, М42-М72', 'Гайка', 'кл.пр.6', 'ГОСТ 5915-70')
@@ -316,11 +343,9 @@ TAB2SumGroupDiamMonthForCol('М18-М36', 'Гайка', 'кл.пр.8', 'ГОСТ 
 TAB2SumGroupDiamMonthForCol('М3, М42-М72', 'Гайка', 'кл.пр.8', 'ГОСТ 5915-70')
 TAB2SumGaika('кл.пр.8', 'ГОСТ 5915-70')
 ItogoGaika()
-#Мостовой Крепеж
+# Мостовой Крепеж
 TAB2MostKrep('Болт', 'кл.пр.10.9', 'ГОСТ Р 52644-2006', 'М16-М30')
 TAB2MostKrep('Гайка', 'кл.пр.10', 'ГОСТ Р 52645-2006', 'М16-М30')
-
-
 
 lst_name_metiz = ['Болт', 'Гайка']
 lst_coating = ['черный', 'цинк']
@@ -330,6 +355,53 @@ HeadWrite(ws_weight)
 HeadWrite(ws_tabl1)
 HeadWrite(ws_tabl2)
 
+
+# Для Графиков
+def SearchItogoTAB2():
+    for m in ws_tabl2['1']:
+        if m.value == 'Итого':
+            return column_index_from_string(m.column)
+
+dict_metiz_graph = {
+    'Болты': {
+        'кл.пр.5.8': {'ч': [], 'ц': [], 'ч+ц': []},
+        'кл.пр.8.8': {'ч': [], 'ц': [], 'ч+ц': []},
+        'кл.пр.(5.8+8.8)': []},
+    'Гайки': {
+        'кл.пр.6': {'ч': [], 'ц': [], 'ч+ц': []},
+        'кл.пр.8': {'ч': [], 'ц': [], 'ч+ц': []},
+        'кл.пр.(6+8)': []},
+}
+
+
+def DictForGraph(bolt_or_gaika, cl_pro4, coating, stroka):
+    for e, w_m in enumerate(range(7, SearchItogoTAB2())):
+        monthTAB2 = ws_tabl2.cell(row=1, column=w_m).value
+        if coating !=0:
+            dict_metiz_graph[bolt_or_gaika][cl_pro4][coating].append([monthTAB2])
+            dict_metiz_graph[bolt_or_gaika][cl_pro4][coating][e].append(ws_tabl2.cell(row=stroka, column=w_m).value)
+        else:
+            dict_metiz_graph[bolt_or_gaika][cl_pro4].append([monthTAB2])
+            dict_metiz_graph[bolt_or_gaika][cl_pro4][e].append(ws_tabl2.cell(row=stroka, column=w_m).value)
+
+DictForGraph('Болты', 'кл.пр.5.8', 'ч', 8)
+DictForGraph('Болты', 'кл.пр.5.8', 'ц', 9)
+DictForGraph('Болты', 'кл.пр.5.8', 'ч+ц', 10)
+DictForGraph('Болты', 'кл.пр.8.8', 'ч', 17)
+DictForGraph('Болты', 'кл.пр.8.8', 'ц', 18)
+DictForGraph('Болты', 'кл.пр.8.8', 'ч+ц', 19)
+DictForGraph('Болты', 'кл.пр.(5.8+8.8)', 0, 20)
+DictForGraph('Гайки', 'кл.пр.6', 'ч', 30)
+DictForGraph('Гайки', 'кл.пр.6', 'ц', 31)
+DictForGraph('Гайки', 'кл.пр.6', 'ч+ц', 32)
+DictForGraph('Гайки', 'кл.пр.8', 'ч', 42)
+DictForGraph('Гайки', 'кл.пр.8', 'ц', 43)
+DictForGraph('Гайки', 'кл.пр.8', 'ч+ц', 44)
+DictForGraph('Гайки', 'кл.пр.(6+8)', 0, 45)
+
+
+print(dict_metiz_graph)
+# print(dict_metiz_graph['Болты']['кл.пр.8.8'])
 # e_cell = 1
 # Заполняем таблицу данными
 # for sk in tonnageData:
@@ -415,4 +487,4 @@ for rows in range(5, ws_sale.max_row):
                 ja4 = [x.coordinate]
                 ja4.fill = fill_except
 
-wb_sale.save('Color+WEIGHT_Angy.xlsx')
+# wb_sale.save('Color+WEIGHT_Angy.xlsx')
